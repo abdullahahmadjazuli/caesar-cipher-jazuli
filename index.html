@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caesar Cipher</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef4ff;color:#172033}
+.container{max-width:900px;margin:40px auto;padding:24px}.card{background:white;border-radius:18px;padding:28px;box-shadow:0 10px 30px #0001}
+h1{margin-top:0}.subtitle{color:#5b6475}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+label{display:block;font-weight:700;margin:12px 0 7px}textarea,input,select{width:100%;padding:13px;border:1px solid #ccd4e0;border-radius:10px;font-size:15px}
+textarea{min-height:150px;resize:vertical}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:#1f6feb;color:white}
+button.secondary{background:#e8edf5;color:#172033}.note{background:#f5f8fc;padding:14px;border-radius:10px;margin-top:18px;line-height:1.6}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container"><div class="card">
+<h1>🔐 Caesar Cipher</h1>
+<p class="subtitle">Enkripsi dan dekripsi pesan menggunakan pergeseran alfabet.</p>
+<div class="grid">
+<div>
+<label>Pesan</label>
+<textarea id="text" placeholder="Masukkan plaintext atau ciphertext..."></textarea>
+<label>Kunci Pergeseran (0–25)</label>
+<input id="key" type="number" min="0" max="25" value="3">
+</div>
+<div>
+<label>Hasil</label>
+<textarea id="result" readonly placeholder="Hasil akan muncul di sini..."></textarea>
+<label>Mode</label>
+<select id="mode"><option value="encrypt">Enkripsi</option><option value="decrypt">Dekripsi</option></select>
+</div>
+</div>
+<div class="actions">
+<button onclick="processCipher()">Proses</button>
+<button class="secondary" onclick="copyResult()">Salin Hasil</button>
+<button class="secondary" onclick="clearAll()">Bersihkan</button>
+</div>
+<div class="note"><b>Rumus:</b> Enkripsi C = (P + k) mod 26, Dekripsi P = (C − k) mod 26. Spasi, angka, dan tanda baca dipertahankan.</div>
+</div></div>
+<script>
+function caesar(text,key,encrypt){
+  key=((Number(key)%26)+26)%26;
+  if(!encrypt) key=(26-key)%26;
+  return [...text].map(ch=>{
+    const code=ch.charCodeAt(0);
+    if(code>=65&&code<=90)return String.fromCharCode((code-65+key)%26+65);
+    if(code>=97&&code<=122)return String.fromCharCode((code-97+key)%26+97);
+    return ch;
+  }).join('');
+}
+function processCipher(){
+  const text=document.getElementById('text').value;
+  const key=document.getElementById('key').value;
+  if(key===''||Number(key)<0||Number(key)>25){alert('Kunci harus 0–25.');return}
+  document.getElementById('result').value=caesar(text,key,document.getElementById('mode').value==='encrypt');
+}
+function copyResult(){navigator.clipboard.writeText(document.getElementById('result').value)}
+function clearAll(){document.getElementById('text').value='';document.getElementById('result').value='';}
+</script>
+</body></html>
